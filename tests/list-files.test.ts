@@ -26,6 +26,12 @@ describe("server basics", () => {
     const health = await fetch(env.url.replace("/mcp", "/health"));
     expect(await health.text()).toBe("ok");
   });
+  it("answers 404 for an unknown session id and 400 when no session is given", async () => {
+    const h = { Authorization: "Bearer test-token-1234567890abcdef", "Content-Type": "application/json", Accept: "application/json, text/event-stream" };
+    const body = JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list" });
+    expect((await fetch(env.url, { method: "POST", headers: { ...h, "Mcp-Session-Id": "does-not-exist" }, body })).status).toBe(404);
+    expect((await fetch(env.url, { method: "POST", headers: h, body })).status).toBe(400);
+  });
   it("returns 400 (not a stack trace) for malformed JSON", async () => {
     const res = await fetch(env.url, {
       method: "POST",

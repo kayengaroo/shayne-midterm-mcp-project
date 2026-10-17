@@ -62,8 +62,13 @@ export async function startServer(config: Config): Promise<RunningServer> {
       let transport = sessionId ? sessions.get(sessionId) : undefined;
 
       if (!transport) {
-        if (sessionId || !isInitializeRequest(req.body)) {
-          jsonRpcError(res, 400, "Bad Request: no valid session. Send an initialize request first.");
+        if (sessionId) {
+          // Unknown id (e.g. after a server restart): 404 tells MCP clients to start a new session.
+          jsonRpcError(res, 404, "Session not found. Send a new initialize request.");
+          return;
+        }
+        if (!isInitializeRequest(req.body)) {
+          jsonRpcError(res, 400, "Bad Request: no session. Send an initialize request first.");
           return;
         }
         // New session: one McpServer + transport per client session.
@@ -93,7 +98,7 @@ export async function startServer(config: Config): Promise<RunningServer> {
     const sessionId = req.header("mcp-session-id");
     const transport = sessionId ? sessions.get(sessionId) : undefined;
     if (!transport) {
-      jsonRpcError(res, 400, "Invalid or missing session id");
+      jsonRpcError(res, sessionId ? 404 : 400, sessionId ? "Session not found" : "Missing session id");
       return;
     }
     await transport.handleRequest(req, res);
