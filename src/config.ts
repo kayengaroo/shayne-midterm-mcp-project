@@ -6,7 +6,10 @@ const EnvSchema = z.object({
   HOST: z.string().min(1).default("127.0.0.1"),
   WORKSPACE_ROOT: z.string().min(1).default("./workspace"),
   LOG_DIR: z.string().min(1).default("./logs"),
-  MCP_AUTH_TOKEN: z.string().min(16, "must be at least 16 characters"),
+  MCP_AUTH_TOKEN: z
+    .string()
+    .min(16, "must be at least 16 characters")
+    .refine((t) => !/change.?me/i.test(t), "is still the placeholder from .env.example; generate a real secret"),
   MAX_FILE_BYTES: z.coerce.number().int().positive().default(1_000_000),
 });
 

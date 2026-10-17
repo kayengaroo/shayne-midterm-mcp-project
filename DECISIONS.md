@@ -9,3 +9,9 @@ _Append-only. Format: `D<n> [date] decision - reason`._
 - D6: Tool errors return isError with a short message; stack traces go only to logs/server.log.
 - D7: Every tool call is logged to logs/calls.jsonl (args truncated) - source for the demo transcript.
 - D8: Delete will be soft (move to .trash/) and require confirm:true (M2).
+- D9: 12 tools (added git_commit so agents can create checkpoints; still no free-form git/shell).
+- D10: Workspace is its own git repo (auto `git init`); root repo ignores workspace/ contents. Seeds live in templates/handoff/.
+- D11: PROJECT_STATE replace requires if_version; log files append-only; generic file tools refuse handoff files.
+- D12: Unknown session id -> 404 (MCP spec) so clients re-initialize after a restart.
+- D13: Placeholder token from .env.example is rejected by config validation.
+- D14: Stateful in-memory sessions accepted as a trade-off; durable context is in handoff files.

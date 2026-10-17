@@ -15,6 +15,10 @@ describe("config", () => {
       expect(String(e)).not.toContain("short-secret");
     }
   });
+  it("rejects the placeholder token from .env.example", () => {
+    expect(() => loadConfig({ MCP_AUTH_TOKEN: "change-me-to-a-long-random-string" })).toThrow(/placeholder/);
+    expect(() => loadConfig({ MCP_AUTH_TOKEN: "CHANGE_ME" })).toThrow();
+  });
   it("applies defaults and validates numbers", () => {
     const c = loadConfig({ MCP_AUTH_TOKEN: "x".repeat(16) });
     expect(c).toMatchObject({ port: 3000, host: "127.0.0.1", maxFileBytes: 1_000_000 });

@@ -1,22 +1,23 @@
 # PROJECT_STATE
-_Single source of truth. Overwrite the sections below; keep it short. Last updated: M1 complete._
+_Development handoff for this repo. Last updated: all milestones complete._
 
 ## Goal
-Sandboxed MCP file-server connector (Node + TS SDK + Streamable HTTP + zod), HTTPS via ngrok, kept alive by pm2, with a 4-file handoff protocol.
+Sandboxed MCP file-server connector (Node + TS SDK + Streamable HTTP + zod), HTTPS via ngrok, pm2, 4-file handoff protocol.
 
 ## Status
-- Milestone: **M1 done** (skeleton + list_files + sandbox). Next: **M2**.
-- Tools registered: list_files (1 of 11 planned).
-- Verified: typecheck OK, build OK, 17 vitest tests pass, built server smoke-tested (health, 401, graceful SIGTERM).
+- **M1-M5 complete.** 12 tools, sandbox, auth, logging, pm2 config, handoff tools, git-lite, 11 docs + README, demo transcript.
+- Verified in dev sandbox: typecheck, build, **71/71 tests**, MCP Inspector CLI (tools/list, success, isError), pm2 (start, kill -9 recovery, restart, graceful stop), `npm run demo` (2 sessions, 18 calls).
 
-## Remaining
-- M2: read_file, write_file, str_replace, delete_file, search_files (+ tests)
-- M3: pm2 config, ngrok docs, deployment docs
-- M4: git_status/git_diff/git_log, handoff_read/handoff_update, write guards
-- M5: multi-session test, transcript, 11 docs, final audit, push
+## Remaining (needs the student, not possible in the dev sandbox)
+- Push to GitHub (see commands in chat / README).
+- Run ngrok with a static domain; verify `curl https://<domain>/health` and 401 on /mcp.
+- Run the multi-step task with a REAL LLM client (e.g. Claude Code) through the tunnel; save its transcript (replace/add to docs/demo-transcript.md).
+- Prepare the 5-minute live demo and the short report (content exists in docs/architecture.md and docs/security.md).
 
-## Known issues
-- ngrok/pm2/real client (Claude) unverified: cannot run in the dev sandbox.
+## Known issues / limits
+- ngrok, real LLM client, `pm2 startup`, Windows/macOS: unverified.
+- claude.ai custom connectors need OAuth (not implemented); use Claude Code or Inspector.
+- Residual risks listed in docs/security.md (TOCTOU symlink race, regex DoS, single token, no rate limit).
 
 ## Next action
-Implement M2 tools in src/tools/, register in src/tools/index.ts, add tests/tools.test.ts.
+Student: push repo, set up ngrok, run real-client demo (docs/testing.md "Suggested real-client task").

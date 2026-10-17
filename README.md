@@ -34,7 +34,7 @@ On first start the server creates `workspace/`, seeds the four handoff files and
 | `npm run dev` | run from TypeScript (tsx) |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run build` / `npm start` | compile to `dist/` / run compiled server |
-| `npm test` | vitest (70 tests, uses temp dirs, a real MCP client and real servers) |
+| `npm test` | vitest (71 tests, uses temp dirs, a real MCP client and real servers) |
 | `npm run demo` | scripted 2-session task; writes `docs/demo-transcript.md` |
 
 ## Connect a client
