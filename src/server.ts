@@ -8,6 +8,7 @@ import type { Config } from "./config.js";
 import { CallLogger } from "./logger.js";
 import { Sandbox } from "./sandbox.js";
 import { registerAllTools } from "./tools/index.js";
+import { initWorkspace } from "./workspace-init.js";
 
 /** Constant-time token comparison (hash first so lengths always match). */
 function tokenMatches(provided: string, expected: string): boolean {
@@ -29,6 +30,7 @@ export interface RunningServer {
 
 export async function startServer(config: Config): Promise<RunningServer> {
   const sandbox = await Sandbox.create(config.workspaceRoot);
+  await initWorkspace(sandbox);
   const logger = new CallLogger(config.logDir);
   const ctx = { config, sandbox, logger };
   const sessions = new Map<string, StreamableHTTPServerTransport>();
@@ -52,7 +54,7 @@ export async function startServer(config: Config): Promise<RunningServer> {
     next();
   };
 
-  app.use("/mcp", requireAuth, express.json({ limit: "2mb" }));
+  app.use("/mcp", requireAuth, express.json({ limit: config.maxFileBytes * 2 + 200_000 }));
 
   app.post("/mcp", async (req: Request, res: Response) => {
     try {

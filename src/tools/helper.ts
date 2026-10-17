@@ -6,6 +6,17 @@ import { ToolError } from "../errors.js";
 import type { CallLogger } from "../logger.js";
 import type { Sandbox } from "../sandbox.js";
 
+const FS_MESSAGES: Record<string, string> = {
+  ENOENT: "Not found.",
+  EISDIR: "Path is a directory.",
+  ENOTDIR: "A parent in the path is not a directory.",
+  EACCES: "Permission denied.",
+  EPERM: "Permission denied.",
+  EEXIST: "Already exists.",
+  ENOTEMPTY: "Directory is not empty.",
+  ENOSPC: "No space left on the server.",
+};
+
 /** Everything a tool needs. Passed in explicitly so tests can build their own. */
 export interface ToolContext {
   config: Config;
@@ -53,7 +64,9 @@ export function registerTool<T extends z.ZodObject>(
         return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
       } catch (err) {
         let message = "Internal error. The failure was logged on the server.";
+        const code = (err as NodeJS.ErrnoException | undefined)?.code;
         if (err instanceof ToolError) message = err.message;
+        else if (typeof code === "string" && FS_MESSAGES[code]) message = FS_MESSAGES[code]!;
         else ctx.logger.logInternal(`tool ${def.name} crashed`, err);
         ctx.logger.logCall({ session: extra.sessionId, tool: def.name, args, ok: false, ms: Date.now() - started, error: message });
         return { isError: true, content: [{ type: "text", text: `Error: ${message}` }] };
