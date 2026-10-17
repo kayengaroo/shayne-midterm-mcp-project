@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+logs/
+*.log
+# Workspace contents are runtime data; only the seed handoff files are tracked
+workspace/*
+!workspace/.gitkeep
+!workspace/PROJECT_STATE.md
+!workspace/PLAN_LOG.md
+!workspace/CHECKPOINTS.md
+!workspace/DECISIONS.md
